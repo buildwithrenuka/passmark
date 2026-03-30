@@ -163,6 +163,10 @@ Telemetry is opt-in. Set `AXIOM_TOKEN` and `AXIOM_DATASET` to enable OpenTelemet
 
 Without these env vars, telemetry is a no-op.
 
+Configure Axiom to get a rich dashboard like this:
+
+![Axiom Dashboard](https://res.cloudinary.com/dkanxf2cg/image/upload/v1774866500/axiom-logs_d4p7h9.png)
+
 ## Email Extraction
 
 Configure an email provider for testing flows that involve email verification. By default, you can use the `emailsink` provider, which provides disposable email addresses and an API to fetch received emails. The free tier doesn't need any credentials, but for more reliability and flexible rate limits, you can sign up for an account and use your `EMAILSINK_API_KEY`. Reach out to us if you want to get an API key.
@@ -205,13 +209,13 @@ Dynamic values can be injected into step data using placeholders:
 
 | Pattern | Scope | Description |
 |---------|-------|-------------|
-| `{{run.email}}` | Per run | Random email (faker) |
-| `{{run.dynamicEmail}}` | Per run | Email using configured domain |
-| `{{run.fullName}}` | Per run | Random full name |
-| `{{run.shortid}}` | Per run | Short unique ID |
-| `{{run.phoneNumber}}` | Per run | Random phone number |
-| `{{global.email}}` | Per execution | Shared across runSteps calls with same `executionId` |
-| `{{global.dynamicEmail}}` | Per execution | Shared dynamic email |
+| `{{run.email}}` | Single test | Random email (faker) |
+| `{{run.dynamicEmail}}` | Single test | Email using configured domain |
+| `{{run.fullName}}` | Single test | Random full name |
+| `{{run.shortid}}` | Single test | Short unique ID |
+| `{{run.phoneNumber}}` | Single test | Random phone number |
+| `{{global.email}}` | All tests in an execution | Shared across runSteps calls with same `executionId` |
+| `{{global.dynamicEmail}}` | All tests in an execution | Shared dynamic email |
 | `{{data.key}}` | Per project | Stored in Redis, managed via project settings |
 | `{{email.type:prompt}}` | Resolved lazily | Extract content from received email |
 
