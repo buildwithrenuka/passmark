@@ -14,8 +14,14 @@ let _anthropic: ReturnType<typeof createAnthropic> | null = null;
 
 function getGoogleProvider() {
   if (!_google) {
+    if (!process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
+      throw new Error(
+        "Missing required environment variable: GOOGLE_GENERATIVE_AI_API_KEY. " +
+          "Set it in your environment (e.g., export GOOGLE_GENERATIVE_AI_API_KEY=...) or configure the AI gateway (e.g., configure({ ai: { gateway: 'vercel' } })) to use a gateway instead of direct provider.",
+      );
+    }
     _google = createGoogleGenerativeAI({
-      apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY!,
+      apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY,
     });
   }
   return _google;
@@ -23,8 +29,14 @@ function getGoogleProvider() {
 
 function getAnthropicProvider() {
   if (!_anthropic) {
+    if (!process.env.ANTHROPIC_API_KEY) {
+      throw new Error(
+        "Missing required environment variable: ANTHROPIC_API_KEY. " +
+          "Set it in your environment (e.g., export ANTHROPIC_API_KEY=...) or configure the AI gateway (e.g., configure({ ai: { gateway: 'vercel' } })) to use a gateway instead of direct provider.",
+      );
+    }
     _anthropic = createAnthropic({
-      apiKey: process.env.ANTHROPIC_API_KEY!,
+      apiKey: process.env.ANTHROPIC_API_KEY,
     });
   }
   return _anthropic;
