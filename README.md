@@ -278,7 +278,6 @@ Step Request
 
 ## Known Limitations
 
-- Uses Playwright's private `_snapshotForAI()` API for accessibility snapshots. This API is not part of Playwright's public contract and may change in future versions.
 - Tests are not comprehensive at the moment. We welcome contributions to expand test coverage, especially around edge cases and failure modes.
 
 ## Contributing

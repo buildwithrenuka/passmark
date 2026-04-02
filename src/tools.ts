@@ -1,17 +1,12 @@
 import { tool } from "ai";
 import { z } from "zod";
 import { Locator, type Page } from "@playwright/test";
-// Private Playwright API: asLocator converts internal selectors to user-facing locator strings.
-// Used for caching step actions as reproducible Playwright code.
-// Risk: internal module path may change across Playwright versions.
-// @ts-expect-error playwright-core/lib/utils is an internal module with no public types
-import { asLocator } from "playwright-core/lib/utils";
 import { wrapTool } from "axiom/ai";
 import shortid from "shortid";
 import { getConfig } from "./config";
 import { axiomEnabled } from "./instrumentation";
 import { logger } from "./logger";
-import { LOCATOR_ACTION_TIMEOUT, STOP_DELAY } from "./constants";
+import { LOCATOR_ACTION_TIMEOUT, SNAPSHOT_TIMEOUT, STOP_DELAY } from "./constants";
 import {
   PlaywrightTestArgs,
   PlaywrightTestOptions,
@@ -22,7 +17,6 @@ import {
 
 type ToolSettings = {
   abortController?: AbortController;
-  userFlow?: string;
   currentStep?: { description: string; data?: Record<string, string> };
   test?: TestType<
     PlaywrightTestArgs & PlaywrightTestOptions,
@@ -251,27 +245,21 @@ export function getAItools(page: Page, settings?: ToolSettings) {
 
 class PlaywrightTools {
   private page: Page;
-  private userFlow;
   private currentStep;
   private abortController?: AbortController;
   public pendingCacheData: Record<string, string> | null = null;
 
   constructor(page: Page, settings: ToolSettings = {}) {
-    const { userFlow, currentStep, abortController } = settings;
+    const { currentStep, abortController } = settings;
 
     this.page = page;
-    this.userFlow = userFlow;
     this.currentStep = currentStep;
     this.abortController = abortController;
   }
 
   public async getSnapshot() {
-    // Private Playwright API: _snapshotForAI returns an accessibility snapshot optimized for AI consumption.
-    // This is the primary mechanism for the AI to "see" page structure without screenshots.
-    // Risk: may be renamed, removed, or change signature in future Playwright versions.
-    // @ts-expect-error _snapshotForAI is a private Playwright API not in public type definitions
-    const snapshot = await this.page._snapshotForAI();
-    return `url: ${this.page.url()}\n\n${typeof snapshot === "object" ? snapshot.full : snapshot}`;
+    const snapshot = await this.page.ariaSnapshot({ mode: "ai", timeout: SNAPSHOT_TIMEOUT });
+    return `url: ${this.page.url()}\n\n${snapshot}`;
   }
 
   public navigateSchema = z.object({
@@ -618,11 +606,7 @@ class PlaywrightTools {
   private async resolveLocator(locator: Locator) {
     let generatedLocator = "";
     try {
-      // Private Playwright API: _resolveSelector resolves a locator to its internal selector string.
-      const { resolvedSelector } = await (
-        locator as unknown as { _resolveSelector(): Promise<{ resolvedSelector: string }> }
-      )._resolveSelector();
-      generatedLocator = asLocator("javascript", resolvedSelector);
+      generatedLocator = (await locator.normalize()).toString();
     } catch (e) {
       logger.error({ err: e }, "Error generating locator");
     }

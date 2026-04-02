@@ -357,7 +357,6 @@ export const runSteps = async ({
     const abortController = new AbortController();
 
     const { tools, getPendingCacheData, clearPendingCacheData } = getAItools(page, {
-      userFlow,
       currentStep: step,
       abortController,
       test,

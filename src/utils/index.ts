@@ -49,20 +49,12 @@ export const withTimeout = <T>(
 };
 
 export const safeSnapshot = async (page: Page, timeout = SNAPSHOT_TIMEOUT) => {
-  const attempt = () =>
-    Promise.race([
-      // Private Playwright API: _snapshotForAI returns an AI-optimized accessibility snapshot.
-      // This is the primary way the AI "sees" page structure. May change in future Playwright versions.
-      // @ts-expect-error _snapshotForAI is a private Playwright API not in public type definitions
-      page._snapshotForAI(),
-      new Promise((_, reject) => setTimeout(() => reject(new Error("timeout")), timeout)),
-    ]);
+  const attempt = async () => {
+    return await page.ariaSnapshot({ mode: "ai", timeout });
+  }
 
   try {
     const snapshot = await attempt();
-    if (typeof snapshot === "object") {
-      return snapshot.full;
-    }
     return snapshot;
   } catch (err: unknown) {
     if (err instanceof Error && err.message === "timeout") {
@@ -174,7 +166,7 @@ export async function waitForDOMStabilization(
         (error instanceof Error && error.message?.includes("navigation"))
       ) {
         // Navigation occurred - wait for the page to be ready
-        await page.waitForLoadState("domcontentloaded").catch(() => {});
+        await page.waitForLoadState("domcontentloaded").catch(() => { });
         return;
       }
       // Re-throw other errors
@@ -256,16 +248,15 @@ You are an AI-powered QA Agent designed to test web applications.
 You are helping to determine if a wait condition has been met during a test flow.
 
 <Context>
-${
-  previousSteps.length > 0
-    ? `Previous steps completed:\n${previousSteps
-        .map(
-          (s, i) =>
-            `${i + 1}. ${s.description}\n${s.data ? `   Data: ${JSON.stringify(s.data)}` : ""}`,
-        )
-        .join("\n")}`
-    : "No previous steps."
-}
+${previousSteps.length > 0
+        ? `Previous steps completed:\n${previousSteps
+          .map(
+            (s, i) =>
+              `${i + 1}. ${s.description}\n${s.data ? `   Data: ${JSON.stringify(s.data)}` : ""}`,
+          )
+          .join("\n")}`
+        : "No previous steps."
+      }
 
 Last executed step: ${currentStep.description}
 ${nextStep ? `Next step: ${nextStep.description}` : ""}

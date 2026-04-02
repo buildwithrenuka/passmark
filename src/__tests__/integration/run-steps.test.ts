@@ -104,7 +104,7 @@ function createMockPage() {
     locator: vi.fn().mockReturnValue(mockLocator),
     getByRole: vi.fn().mockReturnValue(mockLocator),
     getByText: vi.fn().mockReturnValue(mockLocator),
-    _snapshotForAI: vi.fn().mockResolvedValue("snapshot content"),
+    ariaSnapshot: vi.fn().mockResolvedValue("snapshot content"),
     screenshot: vi.fn().mockResolvedValue(Buffer.from("fake-screenshot")),
     url: vi.fn().mockReturnValue("https://example.com"),
     evaluate: vi.fn().mockResolvedValue(undefined),
