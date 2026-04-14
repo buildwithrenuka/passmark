@@ -1,8 +1,20 @@
-# Passmark
+<h1 align="center">
+    <img src=".github/passmark-logo.png" alt="Passmark" width="500" />
+    <br>
+    <small>The open-source AI library for regression testing.</small>
+</h1>
 
-Passmark is an open-source AI framework for regression testing. Most AI testing tools focus on testing a single PR. Passmark is designed for continuous regression testing of applications, where the goal is to catch regressions as soon as they occur, without needing to update AI prompts or retrain models.
+<p align="center">
+    <a href="https://x.com/bug0inc"><img src="https://img.shields.io/badge/follow-%40bug0inc-black?logo=x" alt="Follow on X"></a>
+    <a href="https://www.linkedin.com/company/bug0"><img src="https://img.shields.io/badge/LinkedIn-bug0-blue?logo=linkedin" alt="LinkedIn"></a>
+    <a href="https://bug0.com"><img src="https://img.shields.io/badge/website-bug0.com-brightgreen" alt="Website"></a>
+    <a href="https://www.npmjs.com/package/passmark"><img src="https://img.shields.io/npm/v/passmark" alt="npm package version"></a>
+    <a href="https://github.com/bug0inc/passmark/blob/main/LICENSE.md"><img src="https://img.shields.io/badge/license-FSL--1.1--ALv2-blue" alt="License"></a>
+</p>
 
-Passmark uses AI models to execute natural language steps via Playwright, with intelligent caching, auto-healing, and multi-model assertion verification.
+Passmark covers your regression testing end-to-end and **helps you catch regressions early. Fast.**
+
+It uses AI models to execute natural language steps via Playwright, with intelligent caching, auto-healing, and multi-model assertion verification. Your tests stay stable without needing to update AI prompts or retrain models.
 
 ## Quick Start
 
